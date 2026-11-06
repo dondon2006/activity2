@@ -3,6 +3,7 @@ defineProps({
     students: { type: Array, required: true },
     isAdmin: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
+    deletingId: { type: Number, default: null },
 });
 
 const emit = defineEmits(['edit', 'remove']);
@@ -12,7 +13,7 @@ const emit = defineEmits(['edit', 'remove']);
     <div class="card">
         <h2>Student Records</h2>
 
-        <p v-if="loading">Loading...</p>
+        <p v-if="loading">Loading students...</p>
         <p v-else-if="students.length === 0">No student records found.</p>
 
         <table v-else>
@@ -35,7 +36,13 @@ const emit = defineEmits(['edit', 'remove']);
                     <td>{{ student.year_level }}</td>
                     <td v-if="isAdmin" class="actions">
                         <button class="btn" @click="emit('edit', student)">Edit</button>
-                        <button class="btn danger" @click="emit('remove', student)">Delete</button>
+                        <button
+                            class="btn danger"
+                            :disabled="deletingId === student.id"
+                            @click="emit('remove', student)"
+                        >
+                            {{ deletingId === student.id ? 'Deleting...' : 'Delete' }}
+                        </button>
                     </td>
                 </tr>
             </tbody>
